@@ -35,7 +35,7 @@ This repository provides a multi-agent service that handles typical e-commerce s
 ### Knowledge base search
 - Policy question: ask "What is your return policy?"
 - Cancellation rules: ask "How long do I have to cancel an order?"
-- Shipping delays: asl "carrier delay escalation"
+- Shipping delays: ask "carrier delay escalation"
 
 
 ## Architecture
@@ -148,6 +148,7 @@ All agents share this contract so the runtime can treat every response uniformly
 - Review logs via the service output and inspect traces through Jaeger at `http://localhost:7999` when using Docker Compose.
 
 ## Limitations and future work
+Due to time constraints and the complexity of a production-ready application, several areas still need improvement before we can ship. The most relevant topics are:
 1. **LLM interface** – The abstraction could support other providers, but right now it leans on OpenAI behaviour and only implements the bare minimum of structured output and tool-calling. Retries, configurable models, and streaming are not implemented.
 2. **Testing** – There are no automated tests yet. Dependency injection throughout the runtime and tools should make it straightforward to add unit and integration suites.
 3. **Memory depth** – We only store user and supervisor messages; tool call transcripts and richer metadata are still missing.
