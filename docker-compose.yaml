@@ -1,0 +1,32 @@
+services:
+  chatbot:
+    container_name: chatbot
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    command: ["make", "start_dev"]
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+      OTEL_RESOURCE_ATTRIBUTES: "service.name=zendesk-chatbot"
+    volumes:
+      - ./app/:/usr/src/app/
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  jaeger:
+    container_name: jaeger_otel
+    image: jaegertracing/all-in-one:1.60
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    ports:
+      - "7999:16686" # UI
+      - "4318:4318" # OTLP HTTP
+    command: ["--log-level=warn"]
